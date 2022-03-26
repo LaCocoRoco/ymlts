@@ -1,0 +1,42 @@
+{
+  "name": "ymlts",
+  "version": "1.0.0",
+  "author": "Deiring Andreas",
+  "email": "andreas@deiring.at",
+  "description": "yaml typescript generator",
+  "license": "MIT",
+  "repository": "github:LaCocoRoco/ymlts",
+  "homepage": "https://github.com/Lacocoroco/ymlts#readme",
+  "keywords": [
+    "yaml",
+    "typescript",
+    "generator"
+  ],
+  "bin": {
+    "ymlts": "dist/ymlts.js"
+  },
+  "scripts": {
+    "lint": "eslint src/**/*.ts",
+    "test": "jest",
+    "dev": "ts-node src/ymlts.ts",
+    "build": "rimraf dist && tsc"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0",
+    "quicktype-core": "^6.0.70",
+    "yargs": "^17.4.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.4.1",
+    "@types/js-yaml": "^4.0.5",
+    "@types/yargs": "^17.0.10",
+    "@typescript-eslint/eslint-plugin": "^5.16.0",
+    "@typescript-eslint/parser": "^5.16.0",
+    "eslint": "^8.11.0",
+    "eslint-config-google": "^0.14.0",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^27.1.3",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.2"
+  }
+}

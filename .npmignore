@@ -1,0 +1,12 @@
+# development
+src
+template
+
+# test
+test
+jest.config.ts
+
+# common
+.gitignore
+.eslintrc.yml
+tsconfig.json
