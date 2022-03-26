@@ -2,9 +2,6 @@
 <a href="https://www.npmjs.com/package/ymlts">
   <img src="https://img.shields.io/npm/v/ymlts.svg?style=for-the-badge" />
 </a>
-<a href="https://github.com/LaCocoRoco/ymlts/blob/master/LICENSE">
-  <img src="https://img.shields.io/github/license/lacocoroco/ymlts.svg?style=for-the-badge" />
-</a>
 
 Command Line Interface to generate Typescript from YAML File.
 Combines and simplifies the popular [quicktype](https://github.com/quicktype/quicktype) and [js-yaml](https://github.com/nodeca/js-yaml) package.
