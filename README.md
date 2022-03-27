@@ -1,6 +1,12 @@
 # YAML to Typescript Generator
 <a href="https://www.npmjs.com/package/ymlts">
-  <img src="https://img.shields.io/npm/v/ymlts.svg?style=for-the-badge" />
+  <img alt="GitHub package.json version" src="https://img.shields.io/github/package-json/v/lacocoroco/ymlts?style=for-the-badge">
+</a>
+<a href="https://github.com/LaCocoRoco/ymlts/blob/master/LICENSE">
+  <img alt="GitHub" src="https://img.shields.io/github/license/lacocoroco/ymlts.svg?style=for-the-badge" />
+</a>
+<a href="https://github.com/LaCocoRoco/ymlts">
+  <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/lacocoroco/ymlts?style=for-the-badge">
 </a>
 
 Command Line Interface to generate Typescript from YAML File.
@@ -15,7 +21,7 @@ Usage  :  npx ymlts source [target] [flags]
 
 # Install & Usage Global
 ```
-Install:  npm i -G ymlts
+Install:  npm i -g ymlts
 
 Usage  :  ymlts source [target] [flags]
 ```
@@ -49,16 +55,16 @@ Usage  :  ymlts source [target] [flags]
   target: /usr/file.ts
 ```
 ```
-  ymlts file tsFile.ts
+  ymlts fileYAML fileTS
 
-  source: /root/repo/src/file.yaml
-  target: /root/repo/src/tsFile.d.ts
+  source: /root/repo/src/fileYAML.yaml
+  target: /root/repo/src/fileTS.d.ts
 ```
 ```
-  ymlts template/file /usr/tsFile.d.ts -t
+  ymlts template/fileYAML /usr/fileTS.d.ts -t
 
-  source: /root/repo/src/template/file.yaml
-  target: /usr/tsFile.ts
+  source: /root/repo/src/template/fileYAML.yaml
+  target: /usr/fileTS.ts
 ```
 
 # Example - Input & Output
