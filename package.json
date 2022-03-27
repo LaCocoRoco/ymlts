@@ -1,6 +1,6 @@
 {
   "name": "ymlts",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "author": "Deiring Andreas",
   "email": "andreas@deiring.at",
   "description": "yaml typescript generator",
