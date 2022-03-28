@@ -1,8 +1,0 @@
-hello:
-  title: Average Temperature
-  something: Degrees Fahrenheit
-  foo: 1901-2000
-building:
-  temp:
-    value: 50.34
-    anomaly: -1.68

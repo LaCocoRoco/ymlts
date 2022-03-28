@@ -131,8 +131,7 @@ const getYamlFiles = (path: string): string[] => {
       }
 
       // use path if file is yaml
-      else if (extname(file).includes('.yaml')
-        || extname(file).includes('.yml')) {
+      else if (extname(file).includes('.yaml') || extname(file).includes('.yml')) {
         files.push(file);
       };
     }
