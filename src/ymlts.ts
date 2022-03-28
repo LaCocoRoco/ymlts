@@ -55,7 +55,7 @@ const cli = async () => {
   const targetPath = targetAbsolut ? targetArg : join(cwd, targetArg);
   const targetFile = targetPath.concat(types ? '.ts' : '.d.ts');
   const targetFiles = sourceIsDir ? sourceFiles.map(file => {
-    return file.replace(source, target).replace(/\.yml|\.yaml/g, types ? '.ts' : '.d.ts');
+    return file.replace(sourcePath, targetPath).replace(/\.yml|\.yaml/g, types ? '.ts' : '.d.ts');
   }) : [targetFile];
 
   // throw error if no source files found
