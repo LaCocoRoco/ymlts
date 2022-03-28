@@ -1,8 +1,8 @@
-description:
+hello:
   title: Average Temperature
-  units: Degrees Fahrenheit
-  basePeriod: 1901-2000
-data:
+  something: Degrees Fahrenheit
+  foo: 1901-2000
+building:
   temp:
     value: 50.34
     anomaly: -1.68
