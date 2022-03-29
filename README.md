@@ -10,7 +10,7 @@
 </a>
 
 Command Line Interface to generate Typescript from YAML File.
-Combines and simplifies the popular [quicktype](https://github.com/quicktype/quicktype) and [js-yaml](https://github.com/nodeca/js-yaml) package.
+Combines and simplifies [quicktype](https://github.com/quicktype/quicktype) and [js-yaml](https://github.com/nodeca/js-yaml) package.
 
 # General
 Typing file extension for source and target files are optional.
@@ -77,46 +77,38 @@ Usage  :  ymlts source [target] [flags]
 ```
   Example Environment
   cwd:    /source
-  files:  /file1.yaml
-          /file2.yaml
-          /subfolder/file3.yaml
+  files:  /file.yaml
+          /subfolder/file.yaml
 ```
 ```
   usage:  ymlts source
 
-  source: /source/file1.yaml
-          /source/file2.yaml
-          /source/subfolder/file3.yaml         
-  target: /source/file1.d.ts
-          /source/file2.d.ts
-          /source/subfolder/file3.d.ts
+  source: /source/file.yaml
+          /source/subfolder/file.yaml         
+  target: /source/file.d.ts
+          /source/subfolder/file.d.ts
 ```
 ```
   usage:  ymlts /usr
 
-  source: /usr/file1.yaml
-          /usr/file2.yaml
-          /usr/subfolder/file3.yaml         
-  target: /usr/file1.d.ts
-          /usr/file2.d.ts
-          /usr/subfolder/file3.d.ts
+  source: /usr/file.yaml
+          /usr/subfolder/file.yaml         
+  target: /usr/file.d.ts
+          /usr/subfolder/file.d.ts
 ```
 ```
   usage:  ymlts source target -t
 
-  source: /source/file1.yaml
-          /source/file2.yaml
-          /source/subfolder/file3.yaml         
-  target: /source/target/file1.ts
-          /source/target/file2.ts
-          /source/target/subfolder/file3.ts
+  source: /source/file.yaml
+          /source/subfolder/file.yaml         
+  target: /source/target/file.ts
+          /source/target/subfolder/file.ts
 ```
 ```
   usage:  ymlts source target/file -m
 
-  source: /source/file1.yaml
-          /source/file2.yaml
-          /source/subfolder/file3.yaml         
+  source: /source/file.yaml
+          /source/subfolder/file.yaml         
   target: /source/target/file.d.ts
 ```
 # Example - Input & Output
@@ -183,7 +175,7 @@ interface Description {
 # Issues
 Quicktype merges matching types.
 ```yaml
-//input.yaml
+// source.yaml
 
 description:
   title: Description Title
@@ -193,7 +185,7 @@ book:
   name: Book Name
 ```
 ```typescript
-// output.d.ts
+// target.d.ts
 
 interface Source {
     description: Book;
