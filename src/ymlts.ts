@@ -13,12 +13,12 @@ interface Files {
 }
 
 /**
- * 
- * @param {string} source 
- * @param {string} target 
+ * get source and target files path data
+ * @param {string} source path to source
+ * @param {string} target path to target
  * @param {string} cwd current working directory
  * @param {boolean} ts generate .ts instead of .d.ts
- * @returns {Files} 
+ * @returns {Files} files path data
  */
 const getFiles = (source: string, target: string, cwd: string, ts: boolean): Files | null => {
   // source files
@@ -115,7 +115,7 @@ const generator = async (samples: string[], name: string, opt: boolean): Promise
 
 /**
  * build type files
- * @param {Files} files files path collection
+ * @param {Files} files files path data
  * @param {boolean} ts generate .ts instead of .d.ts
  * @param {boolean} opt make all properties optional
  * @param {boolean} silent disable status message
@@ -136,15 +136,14 @@ const buildTypeFiles = async (files: Files, ts: boolean, opt: boolean, silent: b
     const types = await generator(samples, name, opt);
 
     // write file
-    const dir = parse(files.target[i]).dir;
-    await promises.mkdir(dir, { recursive: true });
+    await promises.mkdir(parse(files.merge).dir, { recursive: true });
     writeFileSync(files.target[i], ts ? types : types.replace(/export /g, ''));
   }
 }
 
 /**
  * build type files and merge into one
- * @param {Files} files files path collection
+ * @param {Files} files files path data
  * @param {boolean} ts generate .ts instead of .d.ts
  * @param {boolean} opt make all properties optional
  * @param {boolean} silent disable status message
@@ -171,14 +170,12 @@ const buildTypeFilesAndMerge = async (files: Files, ts: boolean, opt: boolean, s
   const types = await generator(samples, name, opt);
 
   // write file
-  const dir = parse(files.merge).dir;
-  await promises.mkdir(dir, { recursive: true });
-  //writeFileSync(files.merge, typescript);
+  await promises.mkdir(parse(files.merge).dir, { recursive: true });
   writeFileSync(files.merge, ts ? types : types.replace(/export /g, ''));
 }
 
 /**
- * yaml to typescript cli
+ * yaml to types command line interface
  */
 const cli = async () => {
   const argv = await yargs(process.argv.slice(2)).boolean(['t', 'h', 'o', 's', 'm']).argv;
