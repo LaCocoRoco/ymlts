@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import yargs from 'yargs';
-import { buildTypeFiles, buildMergedTypeFile, getFiles } from './ymlts';
+import { getFiles, getFilesTypes, writeFileToTarget } from './ymlts';
 
 /**
  * yaml to types command line interface
@@ -21,23 +21,25 @@ const cli = async () => {
 
   if (!help) {
     // get source and target files
-    const files = getFiles(source, target, cwd, typescript);
+    const files = getFiles(source, target, cwd, typescript, merge);
 
     if (files) {
-      if (!merge) {
-        // build type files
-        await buildTypeFiles(files, typescript, optional, silent);
-      }
-      else {
-        // build merged type file
-        await buildMergedTypeFile(files, typescript, optional, silent);
+      // build files
+      for (const file of files) {
+        // get types from source
+        const types = await getFilesTypes(file, optional, silent);
+
+        // write files to target
+        writeFileToTarget(file.target, types, silent);
       }
     }
+
     else {
       // print files not found error
       console.log('error: no files found');
     }
   }
+
   else {
     // print help message
     console.log(`  usage : ymlts source [target] [flags]

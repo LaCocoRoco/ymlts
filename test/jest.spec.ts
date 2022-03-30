@@ -1,13 +1,13 @@
 import { join } from 'path';
-import { getFiles, getYamlJsonString, getYamlFiles, generator } from '../src/ymlts';
+import { getFiles, getYamlFiles, Files, getFilesTypes } from '../src/ymlts';
 
-describe('yaml generator test', () => {
+describe('test yaml generator', () => {
   const cwd = process.cwd();
   const template = join(cwd, 'template');
   const source = join(template, 'source');
   const target = join(template, 'target');
 
-  test('source yaml file path equals template', () => {
+  test('test data equals template file struct', () => {
     const files = getYamlFiles(source);
 
     const expected = [
@@ -18,29 +18,45 @@ describe('yaml generator test', () => {
     expect(files).toEqual(expected);
   });
 
-  test('source and target file path equals template', () => {
-    const files = getFiles('template/source', 'template/target', cwd, false);
+  test('test data equals one to one template file struct', () => {
+    const files = getFiles(source, target, cwd, false, false);
 
-    const expected = {
-      merge: target + '.d.ts',
-      source: [
-        join(source, 'file.yaml'),
-        join(source, 'subfolder/file.yaml'),
-      ],
-      target: [
-        join(target, 'file.d.ts'),
-        join(target, 'subfolder/file.d.ts'),
-      ],
-    };
+    const expected: Files[] = [
+      {
+        source: [join(source, 'file.yaml')],
+        target: join(target, 'file.d.ts'),
+      }, {
+        source: [join(source, 'subfolder/file.yaml')],
+        target: join(target, 'subfolder/file.d.ts'),
+      },
+    ];
 
     expect(files).toEqual(expected);
   });
 
-  test('yaml type file equals template', async () => {
-    const path = join(source, 'file.yaml');
-    const sample = getYamlJsonString(path);
-    const types = await generator([sample], 'file', false, false);
-    const actual = types.replace(/\s|\n/g, '');
+  test('test data equals merged template file struct', () => {
+    const files = getFiles(source, target, cwd, false, true);
+
+    const expected: Files[] = [
+      {
+        source: [
+          join(source, 'file.yaml'),
+          join(source, 'subfolder/file.yaml'),
+        ],
+        target: join(template, 'target.d.ts'),
+      },
+    ];
+
+    expect(files).toEqual(expected);
+  });
+
+  test('test data equals one to one template typescript types', async () => {
+    const files: Files = {
+      source: [join(source, 'file.yaml')],
+      target: join(target, 'file.d.ts'),
+    };
+
+    const types = await getFilesTypes(files, false, true);
 
     const expected = `
       interface File {
@@ -57,34 +73,52 @@ describe('yaml generator test', () => {
           header: string;
           text:   string;
       }
-    `.replace(/\s|\n/g, '');
+    `;
 
-    expect(actual).toEqual(expected);
+    expect(types.replace(/\s|\n/g, ''))
+        .toEqual(expected.replace(/\s|\n/g, ''));
   });
 
-  test('yaml typescript file equals template', async () => {
-    const path = join(source, 'file.yaml');
-    const sample = getYamlJsonString(path);
-    const types = await generator([sample], 'file', true, false);
-    const actual = types.replace(/\s|\n/g, '');
+  test('test data equals merged template typescript types', async () => {
+    const files: Files = {
+      source: [
+        join(source, 'file.yaml'),
+        join(source, 'subfolder/file.yaml'),
+      ],
+      target: join(target, 'file.d.ts'),
+    };
+
+    const types = await getFilesTypes(files, false, true);
 
     const expected = `
-      export interface File {
-          description: Description;
-          book:        Book;
+      interface File {
+          description?: Description;
+          book?: Book;
+          house?: House;
       }
       
-      export interface Book {
+      interface Book {
           title: string;
-          name:  string;
+          name: string;
       }
       
-      export interface Description {
+      interface Description {
           header: string;
-          text:   string;
+          text: string;
       }
-    `.replace(/\s|\n/g, '');
+      
+      interface House {
+          door: string;
+          number: number;
+          setup: Setup;
+      }
+      
+      interface Setup {
+          power: string;
+      }  
+    `;
 
-    expect(actual).toEqual(expected);
+    expect(types.replace(/\s|\n/g, ''))
+        .toEqual(expected.replace(/\s|\n/g, ''));
   });
 });

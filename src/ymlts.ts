@@ -3,16 +3,14 @@ import { load, JSON_SCHEMA } from 'js-yaml';
 import { readdirSync, promises, existsSync, lstatSync, readFileSync, writeFileSync } from 'fs';
 import { extname, isAbsolute, join, parse } from 'path';
 
-// source and target files
 export interface Files {
-  merge: string;
   source: string[];
-  target: string[];
+  target: string;
 }
 
 /**
  * get yaml json string
- * @param {string} path path to yaml file
+ * @param {string} path yaml file path
  * @return {string} yaml json string
  */
 export const getYamlJsonString = (path: string): string => {
@@ -24,7 +22,7 @@ export const getYamlJsonString = (path: string): string => {
 /**
  * get yaml files from folder
  * @param {string} path folder path
- * @return {string[]} yaml file path array
+ * @return {string[]} yaml files from folder
  */
 export const getYamlFiles = (path: string): string[] => {
   // file path array
@@ -57,14 +55,19 @@ export const getYamlFiles = (path: string): string[] => {
  * @param {string} target path to target
  * @param {string} cwd current working directory
  * @param {boolean} typescript generate .ts instead of .d.ts
+ * @param {boolean} merge merge all source to one target
  * @return {Files} source and target files
  */
 export const getFiles = (
-  source: string,
-  target: string,
-  cwd: string,
-  typescript: boolean,
-): Files | null => {
+    source: string,
+    target: string,
+    cwd: string,
+    typescript: boolean,
+    merge: boolean,
+): Files[] => {
+  // files collection
+  const files: Files[] = [];
+
   // source files
   const sourcePath = isAbsolute(source) ? source : join(cwd, source);
   const sourceYaml = sourcePath.concat('.yaml');
@@ -73,41 +76,50 @@ export const getFiles = (
   const sourceIsYaml = existsSync(sourceYaml);
   const sourceIsYml = existsSync(sourceYml);
   const sourceFile = sourceIsYaml ? sourceYaml : sourceIsYml ? sourceYml : '';
-  const sourceFiles = sourceIsDir ? getYamlFiles(sourcePath) : [sourceFile];
-
-  // no files found
-  if (!source || !sourceFiles.length) return null;
+  const sourceFiles = sourceIsDir ? getYamlFiles(sourcePath) : sourceFile ? [sourceFile] : [];
 
   // target files
   const targetPath = isAbsolute(target) ? target : join(cwd, target);
-  const targetFiles = sourceFiles.map((file) => {
-    const refactor = file.replace(sourcePath, targetPath);
-    return refactor.replace(/\.yml|\.yaml/g, typescript ? '.ts' : '.d.ts');
-  });
 
-  // target file for merge
-  const mergeFile = targetPath.concat(typescript ? '.ts' : '.d.ts');
+  // source available
+  if (sourceFiles.length) {
+    if (merge) {
+      // merge all files
+      const targetFile = targetPath.concat(typescript ? '.ts' : '.d.ts');
 
-  return {
-    merge: mergeFile,
-    source: sourceFiles,
-    target: targetFiles,
-  };
+      files.push({
+        source: sourceFiles,
+        target: targetFile,
+      });
+    }
+    else {
+      for (const sourceFile of sourceFiles) {
+        // one to one relation
+        const targetFile = sourceFile.replace(sourcePath, targetPath)
+            .replace(/\.yml|\.yaml/g, typescript ? '.ts' : '.d.ts');
+
+        files.push({
+          source: [sourceFile],
+          target: targetFile,
+        });
+      }
+    }
+  }
+
+  return files;
 };
 
 /**
  * types generator for json files
  * @param {string[]} samples json samples
  * @param {string} name main interface type name
- * @param {boolean} typescript generate .ts instead of .d.ts
  * @param {boolean} optional make all properties optional
  * @return {string} json types
  */
 export const generator = async (
-  samples: string[],
-  name: string,
-  typescript: boolean,
-  optional: boolean,
+    samples: string[],
+    name: string,
+    optional: boolean,
 ): Promise<string> => {
   // target language
   const targetLanguage = jsonInputForTargetLanguage('ts');
@@ -131,73 +143,55 @@ export const generator = async (
   });
 
   // return types
-  const types = lines.join('\n');
-  return typescript ? types : types.replace(/export /g, '');
+  return lines.join('\n');
 };
 
 /**
- * build type files
+ * get files types
  * @param {Files} files source and target files
- * @param {boolean} typescript generate .ts instead of .d.ts
  * @param {boolean} optional make all properties optional
  * @param {boolean} silent disable status message
+ * @return {string} files types
  */
-export const buildTypeFiles = async (
-  files: Files,
-  typescript: boolean,
-  optional: boolean,
-  silent: boolean,
-): Promise<void> => {
-  for (let i = 0; i < files.source.length; i++) {
-    // get yaml sample
-    const samples = [getYamlJsonString(files.source[i])];
-
-    // print status
-    if (!silent) console.log('source:\t', files.source[i]);
-    if (!silent) console.log('target:\t', files.target[i]);
-
-    // json to types
-    const name = parse(files.target[i].replace(/\.d\.ts|\.ts/g, '')).name;
-    const types = await generator(samples, name, typescript, optional);
-
-    // write file
-    await promises.mkdir(parse(files.target[i]).dir, { recursive: true });
-    writeFileSync(files.target[i], types);
-  }
-};
-
-/**
- * build type files and merge into one
- * @param {Files} files source and target files
- * @param {boolean} typescript generate .ts instead of .d.ts
- * @param {boolean} optional make all properties optional
- * @param {boolean} silent disable status message
- */
-export const buildMergedTypeFile = async (
-  files: Files,
-  typescript: boolean,
-  optional: boolean,
-  silent: boolean,
-): Promise<void> => {
+export const getFilesTypes = async (
+    files: Files,
+    optional: boolean,
+    silent: boolean,
+): Promise<string> => {
   // merge types into one file
   const samples: string[] = [];
 
   for (let i = 0; i < files.source.length; i++) {
     // get yaml sample
-    samples.push(getYamlJsonString(files.source[i]));
+    const sample = getYamlJsonString(files.source[i]);
+
+    // add sample
+    samples.push(sample);
 
     // print status
     if (!silent) console.log('source:\t', files.source[i]);
   }
 
-  // print status
-  if (!silent) console.log('target:\t', files.merge);
-
   // json to types
-  const name = parse(files.merge.replace(/\.d\.ts|\.ts/g, '')).name;
-  const types = await generator(samples, name, typescript, optional);
+  const name = parse(files.target.replace(/\.d\.ts|\.ts/g, '')).name;
+  const types = await generator(samples, name, optional);
+
+  // target file is typescript
+  const typescript = !files.target.includes('.d.ts');
+  return typescript ? types : types.replace(/export /g, '');
+};
+
+/**
+ * write type files to target path
+ * @param {string} target target path
+ * @param {string} types source types
+ * @param {boolean} silent disable status message
+ */
+export const writeFileToTarget = async (target: string, types: string, silent: boolean) => {
+  // print status
+  if (!silent) console.log('target:\t', target);
 
   // write file
-  await promises.mkdir(parse(files.merge).dir, { recursive: true });
-  writeFileSync(files.merge, types);
+  await promises.mkdir(parse(target).dir, { recursive: true });
+  writeFileSync(target, types);
 };

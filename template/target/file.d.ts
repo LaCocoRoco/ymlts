@@ -1,23 +1,23 @@
 interface File {
     description?: Description;
-    book?: Book;
-    house?: House;
+    book?:        Book;
+    house?:       House;
 }
 
 interface Book {
     title: string;
-    name: string;
+    name:  string;
 }
 
 interface Description {
     header: string;
-    text: string;
+    text:   string;
 }
 
 interface House {
-    door: string;
+    door:   string;
     number: number;
-    setup: Setup;
+    setup:  Setup;
 }
 
 interface Setup {
