@@ -1,7 +1,7 @@
-#!/usr/bin/env ts-node
+#!/usr/bin/env node
 
 import yargs from 'yargs';
-import { buildTypeFiles, buildTypeFilesAndMerge, getFiles } from './ymlts';
+import { buildTypeFiles, buildMergedTypeFile, getFiles } from './ymlts';
 
 /**
  * yaml to types command line interface
@@ -20,7 +20,7 @@ const cli = async () => {
   const cwd = process.cwd();
 
   if (!help) {
-    // get files to generate types
+    // get source and target files
     const files = getFiles(source, target, cwd, typescript);
 
     if (files) {
@@ -29,8 +29,8 @@ const cli = async () => {
         await buildTypeFiles(files, typescript, optional, silent);
       }
       else {
-        // build type files and merge
-        await buildTypeFilesAndMerge(files, typescript, optional, silent);
+        // build merged type file
+        await buildMergedTypeFile(files, typescript, optional, silent);
       }
     }
     else {

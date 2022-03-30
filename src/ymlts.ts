@@ -60,10 +60,10 @@ export const getYamlFiles = (path: string): string[] => {
  * @return {Files} source and target files
  */
 export const getFiles = (
-    source: string,
-    target: string,
-    cwd: string,
-    typescript: boolean,
+  source: string,
+  target: string,
+  cwd: string,
+  typescript: boolean,
 ): Files | null => {
   // source files
   const sourcePath = isAbsolute(source) ? source : join(cwd, source);
@@ -104,10 +104,10 @@ export const getFiles = (
  * @return {string} json types
  */
 export const generator = async (
-    samples: string[],
-    name: string,
-    typescript: boolean,
-    optional: boolean,
+  samples: string[],
+  name: string,
+  typescript: boolean,
+  optional: boolean,
 ): Promise<string> => {
   // target language
   const targetLanguage = jsonInputForTargetLanguage('ts');
@@ -143,10 +143,10 @@ export const generator = async (
  * @param {boolean} silent disable status message
  */
 export const buildTypeFiles = async (
-    files: Files,
-    typescript: boolean,
-    optional: boolean,
-    silent: boolean,
+  files: Files,
+  typescript: boolean,
+  optional: boolean,
+  silent: boolean,
 ): Promise<void> => {
   for (let i = 0; i < files.source.length; i++) {
     // get yaml sample
@@ -161,7 +161,7 @@ export const buildTypeFiles = async (
     const types = await generator(samples, name, typescript, optional);
 
     // write file
-    await promises.mkdir(parse(files.merge).dir, { recursive: true });
+    await promises.mkdir(parse(files.target[i]).dir, { recursive: true });
     writeFileSync(files.target[i], types);
   }
 };
@@ -173,11 +173,11 @@ export const buildTypeFiles = async (
  * @param {boolean} optional make all properties optional
  * @param {boolean} silent disable status message
  */
-export const buildTypeFilesAndMerge = async (
-    files: Files,
-    typescript: boolean,
-    optional: boolean,
-    silent: boolean,
+export const buildMergedTypeFile = async (
+  files: Files,
+  typescript: boolean,
+  optional: boolean,
+  silent: boolean,
 ): Promise<void> => {
   // merge types into one file
   const samples: string[] = [];
@@ -193,7 +193,7 @@ export const buildTypeFilesAndMerge = async (
   // print status
   if (!silent) console.log('target:\t', files.merge);
 
-  // json to typescript
+  // json to types
   const name = parse(files.merge.replace(/\.d\.ts|\.ts/g, '')).name;
   const types = await generator(samples, name, typescript, optional);
 

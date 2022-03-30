@@ -7,7 +7,7 @@ describe('yaml generator test', () => {
   const source = join(template, 'source');
   const target = join(template, 'target');
 
-  test('path of source yaml files equals template', () => {
+  test('source yaml file path equals template', () => {
     const files = getYamlFiles(source);
 
     const expected = [
@@ -18,7 +18,7 @@ describe('yaml generator test', () => {
     expect(files).toEqual(expected);
   });
 
-  test('path of source and target files equals template', () => {
+  test('source and target file path equals template', () => {
     const files = getFiles('template/source', 'template/target', cwd, false);
 
     const expected = {
@@ -36,7 +36,7 @@ describe('yaml generator test', () => {
     expect(files).toEqual(expected);
   });
 
-  test('generated yaml type file equals template', async () => {
+  test('yaml type file equals template', async () => {
     const path = join(source, 'file.yaml');
     const sample = getYamlJsonString(path);
     const types = await generator([sample], 'file', false, false);
@@ -54,6 +54,32 @@ describe('yaml generator test', () => {
       }
       
       interface Description {
+          header: string;
+          text:   string;
+      }
+    `.replace(/\s|\n/g, '');
+
+    expect(actual).toEqual(expected);
+  });
+
+  test('yaml typescript file equals template', async () => {
+    const path = join(source, 'file.yaml');
+    const sample = getYamlJsonString(path);
+    const types = await generator([sample], 'file', true, false);
+    const actual = types.replace(/\s|\n/g, '');
+
+    const expected = `
+      export interface File {
+          description: Description;
+          book:        Book;
+      }
+      
+      export interface Book {
+          title: string;
+          name:  string;
+      }
+      
+      export interface Description {
           header: string;
           text:   string;
       }
