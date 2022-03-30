@@ -1,0 +1,5 @@
+house:
+  door: door
+  number: 10
+  setup:
+    power: working

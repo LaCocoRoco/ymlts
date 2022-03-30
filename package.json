@@ -14,12 +14,12 @@
     "generator"
   ],
   "bin": {
-    "ymlts": "dist/ymlts.js"
+    "ymlts": "dist/index.js"
   },
   "scripts": {
-    "lint": "eslint src/**/*.ts",
+    "lint": "eslint **/*.ts --fix",
     "test": "jest",
-    "dev": "ts-node src/ymlts.ts",
+    "dev": "ts-node src/index.ts",
     "build": "rimraf dist && tsc"
   },
   "dependencies": {

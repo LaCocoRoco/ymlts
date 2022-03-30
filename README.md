@@ -118,7 +118,6 @@ Usage  :  ymlts source [target] [flags]
 description:
   title: Average Temperature
   units: Degrees Fahrenheit
-  basePeriod: 1900-2000
 data:
   temp:
     value: 50.00
@@ -144,7 +143,6 @@ export interface Temp {
 export interface Description {
     title:      string;
     units:      string;
-    basePeriod: string;
 }
 
 ```
@@ -168,7 +166,6 @@ interface Temp {
 interface Description {
     title:      string;
     units:      string;
-    basePeriod: string;
 }
 ```
 
