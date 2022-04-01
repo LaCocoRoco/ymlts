@@ -101,15 +101,15 @@ Usage  :  ymlts source [target] [flags]
 
   source: /source/file.yaml
           /source/subfolder/file.yaml         
-  target: /source/target/file.ts
-          /source/target/subfolder/file.ts
+  target: /target/file.ts
+          /target/subfolder/file.ts
 ```
 ```
   usage:  ymlts source target/file -m
 
   source: /source/file.yaml
           /source/subfolder/file.yaml         
-  target: /source/target/file.d.ts
+  target: /target/file.d.ts
 ```
 # Example - Input & Output
 ```yaml
