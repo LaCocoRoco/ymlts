@@ -1,12 +1,13 @@
 # development
 src
-template
 
 # test
+template
 test
 jest.config.ts
 
 # common
+.github
 .gitignore
 .eslintrc.yml
 tsconfig.json
