@@ -1,6 +1,6 @@
 {
   "name": "ymlts",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "author": "Deiring Andreas",
   "email": "andreas@deiring.at",
   "description": "yaml typescript generator",
@@ -8,7 +8,6 @@
   "repository": "github:LaCocoRoco/ymlts",
   "homepage": "https://github.com/Lacocoroco/ymlts#readme",
   "keywords": [
-    "yml",
     "yaml",
     "typescript",
     "generator"
